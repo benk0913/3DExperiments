@@ -18,7 +18,7 @@ public class Config
     #endif
 
     public const string DOMAIN_LOCAL = "localhost";
-    public const string DOMAIN_PROD = "3dexperiments.herokuapp.com";
+    public const string DOMAIN_PROD = "lag-issue.herokuapp.com";
     public static string DOMAIN = LOCAL ? DOMAIN_LOCAL : DOMAIN_PROD;
     public static string BASE_URL = LOCAL ? ("http://" + DOMAIN + ":5000") : ("https://" + DOMAIN);
     public static string SOCKET_URL = BASE_URL + "/socket.io/";
