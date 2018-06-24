@@ -26,7 +26,10 @@ public class PlayerMovement : MonoBehaviour {
     [SerializeField]
     Transform SpineBone;
 
-    private void Update()
+    [SerializeField]
+    Transform NeckBone;
+
+    private void FixedUpdate()
     {
         if(Input.GetKey(InputMap.Map["Forward"]))
         {
@@ -64,9 +67,37 @@ public class PlayerMovement : MonoBehaviour {
             m_Anim.SetBool("WalkRight", false);
         }
 
-        transform.Rotate((Input.GetAxis("Mouse X") * MouseXSensitivity * Vector3.up));
+        if(Input.GetMouseButtonDown(0))
+        {
+            m_Anim.SetBool("Charging", true);
+            m_Anim.SetTrigger("Charge");
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            m_Anim.SetBool("Charging", false);
+            m_Anim.SetTrigger("Hit");
+        }
+        
+        transform.Rotate(Input.GetAxis("Mouse X") * MouseXSensitivity * Vector3.up);
 
-        SpineBone.transform.Rotate((Input.GetAxis("Mouse Y") * MouseYSensitivity * -Vector3.right));
+
+        if (Input.GetAxis("Mouse Y") > 0f && SpineBone.rotation.x > -0.25f)
+        {
+            SpineBone.transform.Rotate((Input.GetAxis("Mouse Y") * MouseYSensitivity * -Vector3.right));
+        }
+        else if (Input.GetAxis("Mouse Y") < 0f && SpineBone.rotation.x < 0.25f)
+        {
+            SpineBone.transform.Rotate((Input.GetAxis("Mouse Y") * MouseYSensitivity * -Vector3.right));
+        }
+
+        if (Input.GetAxis("Mouse Y") > 0f && NeckBone.rotation.x > -0.5f)
+        {
+            NeckBone.transform.Rotate((Input.GetAxis("Mouse Y") * MouseYSensitivity * -Vector3.right));
+        }
+        else if (Input.GetAxis("Mouse Y") < 0f && NeckBone.rotation.x < 0.5f)
+        {
+            NeckBone.transform.Rotate((Input.GetAxis("Mouse Y") * MouseYSensitivity * -Vector3.right));
+        }
     }
 
     private void MoveRight()
