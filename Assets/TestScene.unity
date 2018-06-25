@@ -258,11 +258,11 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 622569369}
   m_LocalRotation: {x: 0.02776951, y: -0.00042162463, z: -0.0017337569, w: 0.99961275}
-  m_LocalPosition: {x: -0.15066852, y: 2.0258377, z: -3.125362}
+  m_LocalPosition: {x: 0.0056459755, y: 1.6258377, z: 0.15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_Father: {fileID: 1669246049}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &622569374
 MonoBehaviour:
@@ -275,10 +275,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10b87e0b001bc68489c7f217c6e63019, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TargetY: {fileID: 1669246049}
-  TargetX: {fileID: 496889376}
-  MimicSpeed: 15
-  PosFix: {x: 0, y: 1.5, z: 0.3}
+  LookBorderHigh: 60
+  LookBorderLow: -60
 --- !u!4 &1192342348 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400052, guid: 47a3ab7aa12bf524e98643c61020212e, type: 3}
@@ -292,6 +290,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1232426903}
   - component: {fileID: 1232426902}
+  - component: {fileID: 1232426904}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -332,6 +331,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1232426904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1232426901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3e862f368e673f478cfcc02456ddfff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DebugMode: 1
 --- !u!1 &1277359641
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,6 +470,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1885663407}
+  - {fileID: 622569373}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -475,12 +487,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MovementSpeed: 1
   JumpForce: 1
-  MouseXSensitivity: 3
-  MouseYSensitivity: 3
   m_Rigidbody: {fileID: 1669246051}
   m_Anim: {fileID: 1885663406}
   SpineBone: {fileID: 496889376}
   NeckBone: {fileID: 1192342348}
+  MaxSpineBend: 60
+  MinSpineBend: -60
+  AnimationTraverseSpeed: 1
 --- !u!54 &1669246051
 Rigidbody:
   m_ObjectHideFlags: 0

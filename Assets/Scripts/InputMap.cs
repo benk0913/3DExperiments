@@ -11,6 +11,10 @@ public class InputMap : MonoBehaviour {
      
     public static Dictionary<string, KeyCode> Map = new Dictionary<string, KeyCode>();
 
+    public static float MouseSensitivityX = 3f;
+
+    public static float MouseSensitivityY = 2f;
+
     void Awake()
     {
         Map.Clear();

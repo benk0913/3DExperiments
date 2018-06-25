@@ -5,20 +5,19 @@ using UnityEngine;
 public class GameCamera : MonoBehaviour {
 
     [SerializeField]
-    Transform TargetY;
+    float LookBorderHigh = 60f;
 
     [SerializeField]
-    Transform TargetX;
+    float LookBorderLow = -60f;
 
-    [SerializeField]
-    float MimicSpeed = 5f;
+    float CurrentRotationX;
 
-    [SerializeField]
-    Vector3 PosFix;
-
-    private void LateUpdate()
+    private void FixedUpdate()
     {
-        transform.position = Vector3.Lerp(transform.position, TargetY.transform.position + TargetY.transform.TransformDirection(PosFix), MimicSpeed * Time.deltaTime);
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(TargetX.transform.rotation.eulerAngles.x, TargetY.transform.rotation.eulerAngles.y,0f), MimicSpeed * Time.deltaTime);
+        CurrentRotationX += -Input.GetAxis("Mouse Y") * InputMap.MouseSensitivityY;
+        CurrentRotationX = Mathf.Clamp(CurrentRotationX, LookBorderLow, LookBorderHigh);
+
+        transform.rotation = Quaternion.Euler(CurrentRotationX, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+        
     }
 }

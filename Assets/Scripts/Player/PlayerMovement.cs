@@ -12,12 +12,6 @@ public class PlayerMovement : MonoBehaviour {
     float JumpForce = 1f;
 
     [SerializeField]
-    float MouseXSensitivity = 1f;
-
-    [SerializeField]
-    float MouseYSensitivity = 1f;
-
-    [SerializeField]
     Rigidbody m_Rigidbody;
 
     [SerializeField]
@@ -29,42 +23,47 @@ public class PlayerMovement : MonoBehaviour {
     [SerializeField]
     Transform NeckBone;
 
+    [SerializeField]
+    float MaxSpineBend = 60f;
+
+    [SerializeField]
+    float MinSpineBend = -60f;
+
+    [SerializeField]
+    float AnimationTraverseSpeed = 1f;
+
+    float CurrentRotationX;
+
     private void FixedUpdate()
     {
         if(Input.GetKey(InputMap.Map["Forward"]))
         {
             MoveForward();
-            m_Anim.SetBool("WalkForward", true);
-            m_Anim.SetBool("WalkBackward", false);
+            m_Anim.SetFloat("WalkDirY", Mathf.Lerp(m_Anim.GetFloat("WalkDirY"), 1f, Time.deltaTime * AnimationTraverseSpeed));
         }
         else if (Input.GetKey(InputMap.Map["Backward"]))
         {
             MoveBackward();
-            m_Anim.SetBool("WalkBackward", true);
-            m_Anim.SetBool("WalkForward", false);
+            m_Anim.SetFloat("WalkDirY", Mathf.Lerp(m_Anim.GetFloat("WalkDirY"), -1f, Time.deltaTime * AnimationTraverseSpeed));
         }
         else
         {
-            m_Anim.SetBool("WalkForward", false);
-            m_Anim.SetBool("WalkForward", false);
+            m_Anim.SetFloat("WalkDirY", Mathf.Lerp(m_Anim.GetFloat("WalkDirY"), 0f, Time.deltaTime * AnimationTraverseSpeed));
         }
 
         if (Input.GetKey(InputMap.Map["Left"]))
         {
             MoveLeft();
-            m_Anim.SetBool("WalkLeft", true);
-            m_Anim.SetBool("WalkRight", false);
+            m_Anim.SetFloat("WalkDirX", Mathf.Lerp(m_Anim.GetFloat("WalkDirX"), -1f, Time.deltaTime * AnimationTraverseSpeed));
         }
         else if (Input.GetKey(InputMap.Map["Right"]))
         {
             MoveRight();
-            m_Anim.SetBool("WalkLeft", false);
-            m_Anim.SetBool("WalkRight", true);
+            m_Anim.SetFloat("WalkDirX", Mathf.Lerp(m_Anim.GetFloat("WalkDirX"), 1f, Time.deltaTime * AnimationTraverseSpeed));
         }
         else
         {
-            m_Anim.SetBool("WalkLeft", false);
-            m_Anim.SetBool("WalkRight", false);
+            m_Anim.SetFloat("WalkDirX", Mathf.Lerp(m_Anim.GetFloat("WalkDirX"), 0f, Time.deltaTime * AnimationTraverseSpeed));
         }
 
         if(Input.GetMouseButtonDown(0))
@@ -78,26 +77,12 @@ public class PlayerMovement : MonoBehaviour {
             m_Anim.SetTrigger("Hit");
         }
         
-        transform.Rotate(Input.GetAxis("Mouse X") * MouseXSensitivity * Vector3.up);
+        transform.Rotate(Input.GetAxis("Mouse X") * InputMap.MouseSensitivityX * Vector3.up);
 
+        CurrentRotationX += -Input.GetAxis("Mouse Y") * InputMap.MouseSensitivityY;
+        CurrentRotationX = Mathf.Clamp(CurrentRotationX, MinSpineBend, MaxSpineBend);
 
-        if (Input.GetAxis("Mouse Y") > 0f && SpineBone.rotation.x > -0.25f)
-        {
-            SpineBone.transform.Rotate((Input.GetAxis("Mouse Y") * MouseYSensitivity * -Vector3.right));
-        }
-        else if (Input.GetAxis("Mouse Y") < 0f && SpineBone.rotation.x < 0.25f)
-        {
-            SpineBone.transform.Rotate((Input.GetAxis("Mouse Y") * MouseYSensitivity * -Vector3.right));
-        }
-
-        if (Input.GetAxis("Mouse Y") > 0f && NeckBone.rotation.x > -0.5f)
-        {
-            NeckBone.transform.Rotate((Input.GetAxis("Mouse Y") * MouseYSensitivity * -Vector3.right));
-        }
-        else if (Input.GetAxis("Mouse Y") < 0f && NeckBone.rotation.x < 0.5f)
-        {
-            NeckBone.transform.Rotate((Input.GetAxis("Mouse Y") * MouseYSensitivity * -Vector3.right));
-        }
+        SpineBone.rotation = Quaternion.Euler(CurrentRotationX, SpineBone.rotation.eulerAngles.y, SpineBone.rotation.eulerAngles.z);
     }
 
     private void MoveRight()
