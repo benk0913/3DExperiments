@@ -47,8 +47,9 @@ public class SocketClient : MonoBehaviour
 
         CurrentSocket.On("event_error", OnEventError);
 
-        CurrentSocket.On("actor_join_room", OnActorJoinRoom);
-        CurrentSocket.On("actor_leave_room", OnActorLeaveRoom);
+        CurrentSocket.On("prepare_room", OnPrepareRoom);
+        CurrentSocket.On("actor_joined_room", OnActorJoinRoom);
+        CurrentSocket.On("actor_left_room", OnActorLeaveRoom);
  
         CurrentSocket.On("movement", OnMovement);
         
@@ -82,13 +83,11 @@ public class SocketClient : MonoBehaviour
     {
         JSONNode data = (JSONNode)args[0];
         BroadcastEvent("On event error: " + data.AsObject.ToString());
-
     }
 
     private void OnDisconnect(Socket socket, Packet packet, object[] args)
     {
         BroadcastEvent("On disconnect");
-
     }
 
     protected void OnConnect(Socket socket, Packet packet, params object[] args)
@@ -96,11 +95,21 @@ public class SocketClient : MonoBehaviour
         BroadcastEvent("On connect");
     }
 
+    protected void OnPrepareRoom(Socket socket, Packet packet, params object[] args)
+    {
+        BroadcastEvent("Loading scene");
+
+        JSONNode data = (JSONNode)args[0];
+
+        string myId = data["id"];
+    }
+
     protected void OnActorJoinRoom(Socket socket, Packet packet, params object[] args)
     {
         BroadcastEvent("Actor has joined the room");
 
         JSONNode data = (JSONNode)args[0];
+        string actorId = data["id"];
     }
 
     protected void OnActorLeaveRoom(Socket socket, Packet packet, params object[] args)
@@ -108,6 +117,7 @@ public class SocketClient : MonoBehaviour
         BroadcastEvent("Actor has left the room");
 
         JSONNode data = (JSONNode)args[0];
+        string actorId = data["id"];
     }
 
     protected void OnMovement(Socket socket, Packet packet, params object[] args)
@@ -115,6 +125,11 @@ public class SocketClient : MonoBehaviour
         //BroadcastEvent("Movement occured");
 
         JSONNode data = (JSONNode)args[0];
+
+        string actorId = data["id"];
+        Vector3 pos = new Vector3(data["x"].AsFloat, data["y"].AsFloat, data["z"].AsFloat);
+        float angle = data["angle"].AsFloat;
+        float velocity = data["velocity"].AsFloat;
     }
 
     #endregion
@@ -126,7 +141,20 @@ public class SocketClient : MonoBehaviour
         BroadcastEvent("Emitted : LoadedScene");
         JSONNode node = new JSONClass();
 
-        CurrentSocket.Emit("entered_room", node);
+        CurrentSocket.Emit("prepared_room", node);
+    }
+
+    public void EmitMovement(Vector3 pos, float rotDegrees, float velocity)
+    {
+        JSONNode node = new JSONClass();
+
+        node["x"] = pos.x.ToString();
+        node["y"] = pos.y.ToString();
+        node["z"] = pos.z.ToString();
+        node["angle"].AsFloat = rotDegrees;
+        node["velocity"].AsFloat = velocity;
+
+        CurrentSocket.Emit("actor_moved", node);
     }
 
     #endregion
